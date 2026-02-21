@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevHub | Premium Developer Utilities</title>
+    <meta name="description"
+        content="A curated suite of free, privacy-first developer tools. JSON-CSV converter, PDF flipbook viewer, text reader, and more.">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet" />
+    <style>
+        :root {
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.6);
+            --primary: #6366f1;
+            --primary-glow: rgba(99, 102, 241, 0.4);
+            --secondary: #ec4899;
+            --secondary-glow: rgba(236, 72, 153, 0.35);
+            --amber: #f59e0b;
+            --green: #10b981;
+            --blue: #3b82f6;
+            --text-main: #f3f4f6;
+            --text-dim: #9ca3af;
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(ellipse at 10% 0%, rgba(99, 102, 241, 0.2) 0%, transparent 50%),
+                radial-gradient(ellipse at 90% 90%, rgba(236, 72, 153, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(16, 185, 129, 0.04) 0%, transparent 60%);
+        }
+
+        /* ── Navbar ── */
+        .navbar {
+            padding: 1.25rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(3, 7, 18, 0.75);
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #818cf8, #f472b6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-badge {
+            font-size: 0.78rem;
+            font-weight: 500;
+            padding: 0.3rem 0.75rem;
+            background: rgba(99, 102, 241, 0.12);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 2rem;
+            color: #a5b4fc;
+        }
+
+        /* ── Hero Section ── */
+        .hero {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 6rem 2rem 4rem;
+            text-align: center;
+        }
+
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #a5b4fc;
+            background: rgba(99, 102, 241, 0.1);
+            border: 1px solid rgba(99, 102, 241, 0.25);
+            border-radius: 2rem;
+            padding: 0.35rem 1rem;
+            margin-bottom: 2rem;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 700;
+            line-height: 1.1;
+            letter-spacing: -0.03em;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(to right, #818cf8, #f472b6, #fb923c);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-sub {
+            font-size: 1.15rem;
+            color: var(--text-dim);
+            line-height: 1.7;
+            max-width: 600px;
+            margin: 0 auto 3rem;
+        }
+
+        /* Stats Row */
+        .stats-row {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .stat-num {
+            font-size: 1.8rem;
+            font-weight: 700;
+            background: linear-gradient(to right, #a5b4fc, #f9a8d4);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        /* ── Tool Grid ── */
+        .tools-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 2rem 6rem;
+        }
+
+        .section-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-dim);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .tool-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* ── Card ── */
+        .tool-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 2rem;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            text-decoration: none;
+            color: inherit;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .tool-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 24px 48px -12px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Glowing top accent line */
+        .tool-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--card-accent, linear-gradient(to right, #6366f1, #ec4899));
+            opacity: 0;
+            transition: opacity 0.35s;
+        }
+
+        .tool-card:hover::before {
+            opacity: 1;
+        }
+
+        /* Individual card accents */
+        .card-data::before {
+            --card-accent: linear-gradient(to right, #6366f1, #3b82f6);
+        }
+
+        .card-pdf::before {
+            --card-accent: linear-gradient(to right, #f59e0b, #ef4444);
+        }
+
+        /* Card Header */
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .icon-box {
+            width: 52px;
+            height: 52px;
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.35s;
+        }
+
+        .tool-card:hover .icon-box {
+            transform: scale(1.08) rotate(4deg);
+        }
+
+        .icon-box svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .card-meta {
+            flex: 1;
+        }
+
+        .card-tags {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.5rem;
+        }
+
+        .tag {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 0.2rem 0.55rem;
+            border-radius: 2rem;
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-dim);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .tag.featured {
+            color: #fbbf24;
+            background: rgba(251, 191, 36, 0.1);
+            border-color: rgba(251, 191, 36, 0.2);
+        }
+
+        .tag.new {
+            color: #34d399;
+            background: rgba(52, 211, 153, 0.1);
+            border-color: rgba(52, 211, 153, 0.2);
+        }
+
+        .tool-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            letter-spacing: -0.01em;
+        }
+
+        .tool-desc {
+            color: var(--text-dim);
+            font-size: 0.9rem;
+            line-height: 1.55;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        /* ── Feature List ── */
+        .feature-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.45rem;
+            margin-bottom: 1.75rem;
+            padding: 1.25rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 0.85rem;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            font-size: 0.88rem;
+            color: #cbd5e1;
+            line-height: 1.4;
+        }
+
+        .feature-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+
+        /* ── CTA Row inside card ── */
+        .card-cta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .cta-label {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.9rem;
+            font-weight: 600;
+            padding: 0.55rem 1.1rem;
+            border-radius: 0.5rem;
+            border: none;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+            text-decoration: none;
+        }
+
+        .cta-btn.blue {
+            background: var(--primary);
+        }
+
+        .cta-btn.amber {
+            background: var(--amber);
+            color: #1a1a00;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.15);
+        }
+
+        /* ── Coming Soon ── */
+        .card-soon {
+            opacity: 0.55;
+            pointer-events: none;
+        }
+
+        .card-soon:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: var(--border);
+        }
+
+        /* ── Feature Highlight Banner ── */
+        .features-banner {
+            max-width: 1200px;
+            margin: 0 auto 4rem;
+            padding: 0 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .feat-pill {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.85rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 0.85rem;
+            font-size: 0.88rem;
+            color: #cbd5e1;
+        }
+
+        .feat-pill svg {
+            width: 18px;
+            height: 18px;
+            flex-shrink: 0;
+        }
+
+        /* ── Footer ── */
+        footer {
+            border-top: 1px solid var(--border);
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--text-dim);
+            font-size: 0.88rem;
+            line-height: 1.7;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 4rem 1.5rem 3rem;
+            }
+
+            .tools-section {
+                padding: 2rem 1.5rem 4rem;
+            }
+
+            .tool-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .features-banner {
+                grid-template-columns: 1fr 1fr;
+                padding: 0 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ── Navbar ── -->
+    <nav class="navbar">
+        <div class="logo">DevHub.</div>
+        <span class="nav-badge">🚀 2 Tools Live</span>
+    </nav>
+
+    <!-- ── Hero ── -->
+    <section class="hero">
+        <div class="hero-eyebrow">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor">
+                <circle cx="6" cy="6" r="6" />
+            </svg>
+            Free · Browser-Based · Private
+        </div>
+        <h1>Your <span>Developer Toolbox</span><br>Built for Speed</h1>
+        <p class="hero-sub">
+            A curated collection of powerful utilities that run entirely in your browser.
+            No uploads to servers. No sign-up. No tracking. Just tools that work.
+        </p>
+        <div class="stats-row">
+            <div class="stat-item">
+                <span class="stat-num">2</span>
+                <span class="stat-label">Live Tools</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">100%</span>
+                <span class="stat-label">Private & Local</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">0</span>
+                <span class="stat-label">Server Uploads</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-num">Free</span>
+                <span class="stat-label">Always</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── Feature Pills ── -->
+    <div class="features-banner">
+        <div class="feat-pill">
+            <svg fill="none" stroke="#6366f1" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
+            100% Secure & Private
+        </div>
+        <div class="feat-pill">
+            <svg fill="none" stroke="#10b981" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+            Instant · No Loading
+        </div>
+        <div class="feat-pill">
+            <svg fill="none" stroke="#f59e0b" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            Download Results
+        </div>
+        <div class="feat-pill">
+            <svg fill="none" stroke="#ec4899" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+            </svg>
+            Works on Any Device
+        </div>
+        <div class="feat-pill">
+            <svg fill="none" stroke="#60a5fa" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316" />
+            </svg>
+            Easy Share Options
+        </div>
+        <div class="feat-pill">
+            <svg fill="none" stroke="#34d399" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            No Sign-up Required
+        </div>
+    </div>
+
+    <!-- ── Tools ── -->
+    <section class="tools-section">
+        <p class="section-label">Live Tools</p>
+        <div class="tool-grid">
+
+            <!-- ── Card 1: Universal Data Converter ── -->
+            <a href="data-converter/index.html" class="tool-card card-data">
+                <div class="card-header">
+                    <div class="icon-box" style="background:rgba(99,102,241,0.12); color:#818cf8;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+                        </svg>
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-tags">
+                            <span class="tag featured">✨ Featured</span>
+                            <span class="tag">JSON</span>
+                            <span class="tag">CSV</span>
+                            <span class="tag">Excel</span>
+                        </div>
+                        <h2 class="tool-title">Universal Data Converter</h2>
+                    </div>
+                </div>
+
+                <p class="tool-desc">
+                    Bi-directional conversion between JSON and CSV/Excel formats. Smart field detection, nested object
+                    flattening, and a live preview table — all in your browser.
+                </p>
+
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#818cf8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        JSON → CSV with nested object flattening (dot notation)
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#818cf8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        CSV / Excel / TSV → JSON with smart type casting
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#818cf8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Upload file or paste data directly — auto-detects format
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#818cf8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Live table preview with 100-row scrollable grid
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#818cf8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Copy as TSV — paste directly into Google Sheets or Excel
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#818cf8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Custom editable filename before downloading
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#818cf8" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Arrays displayed as readable comma-joined values
+                    </div>
+                </div>
+
+                <div class="card-cta">
+                    <span class="cta-label">JSON ↔ CSV · Excel · Sheet</span>
+                    <span class="cta-btn blue">
+                        Open Tool
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </span>
+                </div>
+            </a>
+
+            <!-- ── Card 2: PDF Flipbook Viewer ── -->
+            <a href="pdf-flipbook/index.html" class="tool-card card-pdf">
+                <div class="card-header">
+                    <div class="icon-box" style="background:rgba(245,158,11,0.1); color:#fbbf24;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                        </svg>
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-tags">
+                            <span class="tag new">🆕 Latest</span>
+                            <span class="tag">PDF</span>
+                            <span class="tag">Reader</span>
+                            <span class="tag">TTS</span>
+                        </div>
+                        <h2 class="tool-title">PDF Flipbook Viewer</h2>
+                    </div>
+                </div>
+
+                <p class="tool-desc">
+                    Load any PDF by file upload or direct URL and read it as a gorgeous interactive flipbook. Switch to
+                    Text Reader mode for full extraction with text-to-speech.
+                </p>
+
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#fbbf24" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Upload PDF file or load from a public URL / link
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#fbbf24" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Drag & drop support with instant loading progress bar
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#fbbf24" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Realistic book-spread layout with a spine shadow effect
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#fbbf24" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Keyboard arrow navigation (← →) + First/Last page buttons
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#fbbf24" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Text Reader tab — extracts all text organized per page
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#fbbf24" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        🔊 Read Aloud (TTS) — reads current spread out loud, stop anytime
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#fbbf24" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Copy all text or Download as .txt file
+                    </div>
+                    <div class="feature-item">
+                        <svg class="feature-icon" fill="none" stroke="#fbbf24" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                        Share via WhatsApp, Telegram, Email or native share
+                    </div>
+                </div>
+
+                <div class="card-cta">
+                    <span class="cta-label">Flipbook · Text · TTS · Share</span>
+                    <span class="cta-btn amber">
+                        Open Tool
+                        <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                        </svg>
+                    </span>
+                </div>
+            </a>
+
+            <!-- ── Coming Soon: Code Formatter ── -->
+            <div class="tool-card card-soon">
+                <div class="card-header">
+                    <div class="icon-box" style="background:rgba(16,185,129,0.1); color:#34d399;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                        </svg>
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-tags"><span class="tag">Coming Soon</span></div>
+                        <h2 class="tool-title">Code Formatter</h2>
+                    </div>
+                </div>
+                <p class="tool-desc">Beautify and minify HTML, CSS, JavaScript, JSON and SQL code with one click.</p>
+                <div class="feature-list">
+                    <div class="feature-item"><svg class="feature-icon" fill="none" stroke="#64748b"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg> Multi-language support</div>
+                    <div class="feature-item"><svg class="feature-icon" fill="none" stroke="#64748b"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg> Configurable indent size</div>
+                </div>
+                <div class="card-cta">
+                    <span class="cta-label" style="color:#4b5563">In development</span>
+                </div>
+            </div>
+
+            <!-- ── Coming Soon: Regex Playground ── -->
+            <div class="tool-card card-soon">
+                <div class="card-header">
+                    <div class="icon-box" style="background:rgba(96,165,250,0.1); color:#60a5fa;">
+                        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <div class="card-meta">
+                        <div class="card-tags"><span class="tag">Coming Soon</span></div>
+                        <h2 class="tool-title">Regex Playground</h2>
+                    </div>
+                </div>
+                <p class="tool-desc">Test and debug regular expressions in real-time with highlighted match groups and
+                    plain-English explanations.</p>
+                <div class="feature-list">
+                    <div class="feature-item"><svg class="feature-icon" fill="none" stroke="#64748b"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg> Live highlights as you type</div>
+                    <div class="feature-item"><svg class="feature-icon" fill="none" stroke="#64748b"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg> Flag toggles (g, i, m)</div>
+                </div>
+                <div class="card-cta">
+                    <span class="cta-label" style="color:#4b5563">In development</span>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ── Footer ── -->
+    <footer>
+        <div class="logo" style="font-size:1.2rem; margin-bottom:0.75rem">DevHub.</div>
+        <p>Free developer tools · Entirely local · No accounts · No tracking</p>
+        <p style="margin-top:0.4rem">&copy; 2026 DevHub Toolbox</p>
+    </footer>
+
+</body>
+
+</html>
